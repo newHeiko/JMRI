@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JButton;
@@ -43,7 +45,7 @@ public class VariableTableModel extends AbstractTableModel implements ActionList
 
     private String[] headers = null;
 
-    private Vector<VariableValue> rowVector = new Vector<>();  // vector of Variable items
+    private List<VariableValue> rowVector = new ArrayList<VariableValue>(); // list of variable items
     private CvTableModel _cvModel = null;          // reference to external table model
     private Vector<JButton> _writeButtons = new Vector<>();
     private Vector<JButton> _readButtons = new Vector<>();
@@ -110,7 +112,7 @@ public class VariableTableModel extends AbstractTableModel implements ActionList
         } else if (headers[col].equals("Read")) {
             return true;
         } else if (headers[col].equals("Write")
-                && !((rowVector.elementAt(row))).getReadOnly()) {
+                && !((rowVector.get(row))).getReadOnly()) {
             return true;
         } else {
             return false;
@@ -118,36 +120,36 @@ public class VariableTableModel extends AbstractTableModel implements ActionList
     }
 
     public VariableValue getVariable(int row) {
-        return (rowVector.elementAt(row));
+        return (rowVector.get(row));
     }
 
     public String getLabel(int row) {
-        return (rowVector.elementAt(row)).label();
+        return (rowVector.get(row)).label();
     }
 
     public String getItem(int row) {
-        return (rowVector.elementAt(row)).item();
+        return (rowVector.get(row)).item();
     }
 
     public String getCvName(int row) {
-        return (rowVector.elementAt(row)).cvName();
+        return (rowVector.get(row)).cvName();
     }
 
     public String getValString(int row) {
-        return (rowVector.elementAt(row)).getValueString();
+        return (rowVector.get(row)).getValueString();
     }
 
     public void setIntValue(int row, int val) {
-        (rowVector.elementAt(row)).setIntValue(val);
+        (rowVector.get(row)).setIntValue(val);
     }
 
     public void setState(int row, int val) {
         log.debug("setState row: {} val: {}", row, val);
-        (rowVector.elementAt(row)).setState(val);
+        (rowVector.get(row)).setState(val);
     }
 
     public int getState(int row) {
-        return (rowVector.elementAt(row)).getState();
+        return (rowVector.get(row)).getState();
     }
 
     /*
@@ -155,7 +157,7 @@ public class VariableTableModel extends AbstractTableModel implements ActionList
      * for the row-th variable.
      */
     public Object getRep(int row, String format) {
-        VariableValue v = rowVector.elementAt(row);
+        VariableValue v = rowVector.get(row);
         return v.getNewRep(format);
     }
 
@@ -166,7 +168,7 @@ public class VariableTableModel extends AbstractTableModel implements ActionList
             log.debug("row index greater than row vector size");
             return "Error";
         }
-        VariableValue v = rowVector.elementAt(row);
+        VariableValue v = rowVector.get(row);
         if (v == null) {
             log.debug("v is null!");
             return "Error value";
@@ -373,7 +375,7 @@ public class VariableTableModel extends AbstractTableModel implements ActionList
         setToolTip(e, v);
 
         // record new variable, update state, hook up listeners
-        rowVector.addElement(v);
+        rowVector.add(v);
         v.setState(VariableValue.FROMFILE);
         v.addPropertyChangeListener(this);
 
@@ -1014,7 +1016,7 @@ public class VariableTableModel extends AbstractTableModel implements ActionList
                 _cvModel.allCvMap(), _status, stdname);
 
         // record new variable, update state, hook up listeners
-        rowVector.addElement(v);
+        rowVector.add(v);
         v.setState(VariableValue.FROMFILE);
         v.addPropertyChangeListener(this);
 
@@ -1062,7 +1064,7 @@ public class VariableTableModel extends AbstractTableModel implements ActionList
 
         VariableValue v = new DecVariableValue(name, comment, "", readOnly, infoOnly, writeOnly, opsOnly,
                 CV, mask, minVal, maxVal, _cvModel.allCvMap(), _status, null);
-        rowVector.addElement(v);
+        rowVector.add(v);
         v.addPropertyChangeListener(this);
     }
 
@@ -1092,7 +1094,7 @@ public class VariableTableModel extends AbstractTableModel implements ActionList
      * @param i row number
      */
     public void read(int i) {
-        VariableValue v = rowVector.elementAt(i);
+        VariableValue v = rowVector.get(i);
         v.readAll();
     }
 
@@ -1102,7 +1104,7 @@ public class VariableTableModel extends AbstractTableModel implements ActionList
      * @param i row number
      */
     public void write(int i) {
-        VariableValue v = rowVector.elementAt(i);
+        VariableValue v = rowVector.get(i);
         v.writeAll();
     }
 
@@ -1153,7 +1155,7 @@ public class VariableTableModel extends AbstractTableModel implements ActionList
     public boolean decoderDirty() {
         int len = rowVector.size();
         for (int i = 0; i < len; i++) {
-            if (((rowVector.elementAt(i))).getState() == CvValue.EDITED) {
+            if (((rowVector.get(i))).getState() == CvValue.EDITED) {
                 return true;
             }
         }
@@ -1214,14 +1216,14 @@ public class VariableTableModel extends AbstractTableModel implements ActionList
 
         // remove variables listeners
         for (int i = 0; i < rowVector.size(); i++) {
-            VariableValue v = rowVector.elementAt(i);
+            VariableValue v = rowVector.get(i);
             v.removePropertyChangeListener(this);
             v.dispose();
         }
 
         headers = null;
 
-        rowVector.removeAllElements();
+        rowVector.clear();
         rowVector = null;
 
         _cvModel = null;
