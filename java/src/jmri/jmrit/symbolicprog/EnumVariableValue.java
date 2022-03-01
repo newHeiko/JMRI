@@ -104,10 +104,10 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
     }
 
     public void lastItem() {
-	_model = new DefaultComboBoxModel<>(java.util.Arrays.copyOf(_itemArray, _nstored));
+        _model = new DefaultComboBoxModel<>(java.util.Arrays.copyOf(_itemArray, _nstored));
 
-	// connect to the CV so we'll see changes.
-	CvValue cv = _cvMap.get(getCvNum());
+        // connect to the CV so we'll see changes.
+        CvValue cv = _cvMap.get(getCvNum());
         if (cv == null) {
             log.error("no CV defined in enumVal {}, skipping setState", getCvName());
             return;
@@ -119,9 +119,9 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
     @Override
     public void setToolTipText(String t) {
         super.setToolTipText(t);   // do default stuff
-	if(_value != null) {	    
-	    _value.setToolTipText(t);  // set our value
-	}
+        if(_value != null) {	    
+            _value.setToolTipText(t);  // set our value
+        }
     }
 
     // stored value
@@ -136,26 +136,26 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
 
     private void createGUI()
     {
-	_value = new JComboBox<String>(_model);
-	_value.getAccessibleContext().setAccessibleName(label());
-	
-	// finish initialization
-	_value.setActionCommand("");
-	_defaultColor = _value.getBackground();
-	if (_backgroundColor != null) {
-	    _value.setBackground(_backgroundColor);
-	} else {
-	    _value.setBackground(COLOR_UNKNOWN);
-	}
-	_value.setOpaque(true);
+        _value = new JComboBox<String>(_model);
+        _value.getAccessibleContext().setAccessibleName(label());
 
-	// apply tooltip text if it has been set before creating GUI
-	if(super._tooltipText != null) {
-	    _value.setToolTipText(super._tooltipText);
-	}
-	
-	// connect to the JComboBox model so we'll see changes.
-	_value.addActionListener(this);
+        // finish initialization
+        _value.setActionCommand("");
+        _defaultColor = _value.getBackground();
+        if (_backgroundColor != null) {
+            _value.setBackground(_backgroundColor);
+        } else {
+            _value.setBackground(COLOR_UNKNOWN);
+        }
+        _value.setOpaque(true);
+
+        // apply tooltip text if it has been set before creating GUI
+        if(super._tooltipText != null) {
+            _value.setToolTipText(super._tooltipText);
+        }
+
+        // connect to the JComboBox model so we'll see changes.
+        _value.addActionListener(this);
     }
     
     Deque<DefaultMutableTreeNode> treeNodes = new ArrayDeque<>();
@@ -168,8 +168,8 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
     @Override
     public void setAvailable(boolean a) {
         if(_value != null) {
-	    _value.setVisible(a);
-	}
+            _value.setVisible(a);
+        }
         for (ComboCheckBox c : comboCBs) {
             c.setVisible(a);
         }
@@ -332,9 +332,9 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
     @Override
     public Component getCommonRep() {
         if (_value == null) {
-	    createGUI();
-	}
-	return _value;
+            createGUI();
+        }
+        return _value;
     }
 
     public void setValue(int value) {
@@ -348,9 +348,9 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
 
     @Override
     public Component getNewRep(String format) {
-	if (format != "tree" && _value == null) {
-	    createGUI();	    
-	}	    	
+        if (format != "tree" && _value == null) {
+            createGUI();	    
+        }	    	
 
         // sort on format type
         switch (format) {
@@ -450,7 +450,7 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
             }
         }
     }
-    
+
     private final List<ComboCheckBox> comboCBs = new ArrayList<>();
     private final List<VarComboBox> comboVars = new ArrayList<>();
     private final List<ComboRadioButtons> comboRBs = new ArrayList<>();
@@ -459,15 +459,15 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
     // implement an abstract member to set colors
     @Override
     void setColor(Color c) {
-	if (c != null) {
-	    _backgroundColor = c;
-	} else {
-	    _backgroundColor = _defaultColor;
-	}
-	if (_value == null) {
-	    return;
-	}
-	_value.setBackground(_backgroundColor);
+        if (c != null) {
+            _backgroundColor = c;
+        } else {
+            _backgroundColor = _defaultColor;
+        }
+        if (_value == null) {
+            return;
+        }
+        _value.setBackground(_backgroundColor);
         _value.setOpaque(true);
     }
 
