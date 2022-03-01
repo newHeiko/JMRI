@@ -10,6 +10,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -103,17 +104,10 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
     }
 
     public void lastItem() {
-        _value = new JComboBox<>(java.util.Arrays.copyOf(_itemArray, _nstored));
-        _value.getAccessibleContext().setAccessibleName(label());
+	_model = new DefaultComboBoxModel<>(java.util.Arrays.copyOf(_itemArray, _nstored));
 
-        // finish initialization
-        _value.setActionCommand("");
-        _defaultColor = _value.getBackground();
-        _value.setBackground(COLOR_UNKNOWN);
-        _value.setOpaque(true);
-        // connect to the JComboBox model and the CV so we'll see changes.
-        _value.addActionListener(this);
-        CvValue cv = _cvMap.get(getCvNum());
+	// connect to the CV so we'll see changes.
+	CvValue cv = _cvMap.get(getCvNum());
         if (cv == null) {
             log.error("no CV defined in enumVal {}, skipping setState", getCvName());
             return;
@@ -125,10 +119,13 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
     @Override
     public void setToolTipText(String t) {
         super.setToolTipText(t);   // do default stuff
-        _value.setToolTipText(t);  // set our value
+	if(_value != null) {	    
+	    _value.setToolTipText(t);  // set our value
+	}
     }
 
     // stored value
+    DefaultComboBoxModel<String> _model = null;
     JComboBox<String> _value = null;
 
     // place to keep the items & associated numbers
@@ -137,15 +134,42 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
     private int[] _valueArray = null;
     private int _nstored;
 
+    private void createGUI()
+    {
+	_value = new JComboBox<String>(_model);
+	_value.getAccessibleContext().setAccessibleName(label());
+	
+	// finish initialization
+	_value.setActionCommand("");
+	_defaultColor = _value.getBackground();
+	if (_backgroundColor != null) {
+	    _value.setBackground(_backgroundColor);
+	} else {
+	    _value.setBackground(COLOR_UNKNOWN);
+	}
+	_value.setOpaque(true);
+
+	// apply tooltip text if it has been set before creating GUI
+	if(super._tooltipText != null) {
+	    _value.setToolTipText(super._tooltipText);
+	}
+	
+	// connect to the JComboBox model so we'll see changes.
+	_value.addActionListener(this);
+    }
+    
     Deque<DefaultMutableTreeNode> treeNodes = new ArrayDeque<>();
 
     int _maxVal;
     int _minVal;
-    Color _defaultColor;
+    Color _defaultColor = null;
+    Color _backgroundColor = null;
 
     @Override
     public void setAvailable(boolean a) {
-        _value.setVisible(a);
+        if(_value != null) {
+	    _value.setVisible(a);
+	}
         for (ComboCheckBox c : comboCBs) {
             c.setVisible(a);
         }
@@ -172,7 +196,7 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
         }
         if (!(e.getActionCommand().equals(""))) {
             // is from alternate rep
-            _value.setSelectedItem(e.getActionCommand());
+            _model.setSelectedItem(e.getActionCommand());
             if (log.isDebugEnabled()) {
                 log.debug("{} action event was from alternate rep", label());
             }
@@ -230,8 +254,8 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
 
     @Override
     public String getTextValue() {
-        if (_value.getSelectedItem() != null) {
-            return _value.getSelectedItem().toString();
+        if (_model.getSelectedItem() != null) {
+            return _model.getSelectedItem().toString();
         } else {
             return "";
         }
@@ -239,7 +263,7 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
 
     @Override
     public Object getValueObject() {
-        return _value.getSelectedIndex();
+        return _model.getIndexOf(_model.getSelectedItem());
     }
 
     /**
@@ -257,7 +281,7 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
             for (int i = 0; i < _nstored; i++) {
                 if (_valueArray[i] == value) {
                     //found it, select it
-                    _value.setSelectedIndex(i);
+                    _model.setSelectedItem(_itemArray[i]);
 
                     // now select in the tree
                     TreePath path = _pathArray[i];
@@ -273,7 +297,7 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
 
         // We can be commanded to a number that hasn't been defined.
         // But that's OK for certain applications.  Instead, we add them as needed
-        log.debug("Create new item with value {} count was {} in {}", value, _value.getItemCount(), label());
+        log.debug("Create new item with value {} count was {} in {}", value, _model.getSize(), label());
         // lengthen arrays
         _valueArray = java.util.Arrays.copyOf(_valueArray, _valueArray.length + 1);
 
@@ -284,8 +308,8 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
         addItem("Reserved value " + value, value);
 
         // update the JComboBox
-        _value.addItem(_itemArray[_nstored - 1]);
-        _value.setSelectedItem(_itemArray[_nstored - 1]);
+        _model.addElement(_itemArray[_nstored - 1]);
+        _model.setSelectedItem(_itemArray[_nstored - 1]);
 
         // tell trees to redisplay & select
         for (JTree tree : trees) {
@@ -298,16 +322,19 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
 
     @Override
     public int getIntValue() {
-        if (_value.getSelectedIndex() >= _valueArray.length || _value.getSelectedIndex() < 0) {
-            log.error("trying to get value {} too large for array length {} in var {}", _value.getSelectedIndex(), _valueArray.length, label());
+        if (_model.getIndexOf(_model.getSelectedItem()) >= _valueArray.length || _model.getIndexOf(_model.getSelectedItem()) < 0) {
+            log.error("trying to get value {} too large for array length {} in var {}", _model.getIndexOf(_model.getSelectedItem()), _valueArray.length, label());
         }
-        log.debug("SelectedIndex={}", _value.getSelectedIndex());
-        return _valueArray[_value.getSelectedIndex()];
+        log.debug("SelectedIndex={}", _model.getIndexOf(_model.getSelectedItem()));
+        return _valueArray[_model.getIndexOf(_model.getSelectedItem())];
     }
 
     @Override
     public Component getCommonRep() {
-        return _value;
+        if (_value == null) {
+	    createGUI();
+	}
+	return _value;
     }
 
     public void setValue(int value) {
@@ -321,6 +348,10 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
 
     @Override
     public Component getNewRep(String format) {
+	if (format != "tree" && _value == null) {
+	    createGUI();	    
+	}	    	
+
         // sort on format type
         switch (format) {
             case "checkbox": {
@@ -395,7 +426,7 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
                     }
                 });
                 // select initial value
-                TreePath path = _pathArray[_value.getSelectedIndex()];
+                TreePath path = _pathArray[_model.getIndexOf(_model.getSelectedItem())];
                 dTree.setSelectionPath(path);
                 // ensure selection is in visible portion of JScrollPane
                 dTree.scrollPathToVisible(path);
@@ -408,7 +439,7 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
                 return dScroll;
             default: {
                 // return a new JComboBox representing the same model
-                VarComboBox b = new VarComboBox(_value.getModel(), this);
+                VarComboBox b = new VarComboBox(_model, this);
                 b.getAccessibleContext().setAccessibleName(label());
                 comboVars.add(b);
                 if (getReadOnly() || getInfoOnly()) {
@@ -419,7 +450,7 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
             }
         }
     }
-
+    
     private final List<ComboCheckBox> comboCBs = new ArrayList<>();
     private final List<VarComboBox> comboVars = new ArrayList<>();
     private final List<ComboRadioButtons> comboRBs = new ArrayList<>();
@@ -428,11 +459,15 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
     // implement an abstract member to set colors
     @Override
     void setColor(Color c) {
-        if (c != null) {
-            _value.setBackground(c);
-        } else {
-            _value.setBackground(_defaultColor);
-        }
+	if (c != null) {
+	    _backgroundColor = c;
+	} else {
+	    _backgroundColor = _defaultColor;
+	}
+	if (_value == null) {
+	    return;
+	}
+	_value.setBackground(_backgroundColor);
         _value.setOpaque(true);
     }
 
@@ -509,7 +544,7 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
                 }
                 setState(cv.getState());
                 for (JTree tree : trees) {
-                    tree.setBackground(_value.getBackground());
+                    tree.setBackground(_backgroundColor);
                     //tree.setOpaque(true);
                 }
                 break;
@@ -550,7 +585,7 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
                 }
             };
             // get the original color right
-            setBackground(_var._value.getBackground());
+            setBackground(_var._backgroundColor);
             setOpaque(true);
             // listen for changes to original state
             _var.addPropertyChangeListener(_l);
@@ -562,7 +597,7 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
         void originalPropertyChanged(java.beans.PropertyChangeEvent e) {
             // update this color from original state
             if (e.getPropertyName().equals("State")) {
-                setBackground(_var._value.getBackground());
+                setBackground(_var._backgroundColor);
                 setOpaque(true);
             }
         }
