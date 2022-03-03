@@ -106,6 +106,8 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
     public void lastItem() {
         _model = new DefaultComboBoxModel<>(java.util.Arrays.copyOf(_itemArray, _nstored));
 
+        _backgroundColor = COLOR_UNKNOWN;
+        
         // connect to the CV so we'll see changes.
         CvValue cv = _cvMap.get(getCvNum());
         if (cv == null) {
@@ -134,7 +136,7 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
     private int[] _valueArray = null;
     private int _nstored;
 
-    private void createGUI()
+    private void createCommonRep()
     {
         _value = new JComboBox<String>(_model);
         _value.getAccessibleContext().setAccessibleName(label());
@@ -142,17 +144,16 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
         // finish initialization
         _value.setActionCommand("");
         _defaultColor = _value.getBackground();
-        if (_backgroundColor != null) {
-            _value.setBackground(_backgroundColor);
-        } else {
-            _value.setBackground(COLOR_UNKNOWN);
-        }
+        _value.setBackground(_backgroundColor);
         _value.setOpaque(true);
 
-        // apply tooltip text if it has been set before creating GUI
+        // apply tooltip text if it has been set before
         if(super._tooltipText != null) {
             _value.setToolTipText(super._tooltipText);
         }
+
+        // set visibility correctly
+        _value.setVisible(getAvailable());
 
         // connect to the JComboBox model so we'll see changes.
         _value.addActionListener(this);
@@ -332,7 +333,7 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
     @Override
     public Component getCommonRep() {
         if (_value == null) {
-            createGUI();
+            createCommonRep();
         }
         return _value;
     }
@@ -348,8 +349,9 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
 
     @Override
     public Component getNewRep(String format) {
-        if (format != "tree" && _value == null) {
-            createGUI();	    
+        if ( (format.equals("checkbox") || format.equals("radiobuttons") ||
+              format.equals("onradiobutton") || format.equals("offradiobutton")) && _value == null) {
+            createCommonRep();
         }	    	
 
         // sort on format type
@@ -461,8 +463,10 @@ public class EnumVariableValue extends VariableValue implements ActionListener {
     void setColor(Color c) {
         if (c != null) {
             _backgroundColor = c;
-        } else {
+        } else if (_defaultColor != null) {
             _backgroundColor = _defaultColor;
+        } else {
+            _backgroundColor = COLOR_UNKNOWN;
         }
         if (_value == null) {
             return;
