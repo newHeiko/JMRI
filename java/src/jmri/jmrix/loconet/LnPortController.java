@@ -42,6 +42,8 @@ public abstract class LnPortController extends jmri.jmrix.AbstractSerialPortCont
     protected boolean mTurnoutExtraSpace = false;
     protected boolean mInterrogateAtStart = true;
     protected boolean mTranspondingAvailable = false;
+    
+    protected int mLoconetDeviceID = 0x0171;
 
     protected boolean mLoconetProtocolAutoDetect = true;
 
