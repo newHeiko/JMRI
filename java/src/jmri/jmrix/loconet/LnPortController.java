@@ -1,5 +1,8 @@
 package jmri.jmrix.loconet;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +18,11 @@ public abstract class LnPortController extends jmri.jmrix.AbstractSerialPortCont
     protected LnPortController(LocoNetSystemConnectionMemo connectionMemo) {
         super(connectionMemo);
         setManufacturer(LnConnectionTypeList.DIGITRAX);
+        String[] validIDs = new String[256];
+        Arrays.setAll(validIDs, i -> String.format("%0#6x", i));
+        validIDs[0] = "0x0171";
+            
+        options.put("LoconetDeviceID", new Option("Loconet Unique Device ID", validIDs, Option.Type.TEXT)); // Needs l10n
     }
 
     /**
