@@ -2842,6 +2842,23 @@ public class CreateLogixNGTreeScaffold {
         publish = new jmri.jmrix.mqtt.logixng.Publish(digitalActionManager.getAutoSystemName(), null, _mqttMemo);
         publish.getSelectTopic().setValue("topic");
         publish.getSelectMessage().setValue("message");
+        publish.setRetain(jmri.jmrix.mqtt.logixng.Publish.Retain.Default);
+        maleSocket = digitalActionManager.registerAction(publish);
+        maleSocket.setEnabled(false);
+        actionManySocket.getChild(indexAction++).connect(maleSocket);
+
+        publish = new jmri.jmrix.mqtt.logixng.Publish(digitalActionManager.getAutoSystemName(), null, _mqttMemo);
+        publish.getSelectTopic().setValue("otherTopic");
+        publish.getSelectMessage().setValue("otherMessage");
+        publish.setRetain(jmri.jmrix.mqtt.logixng.Publish.Retain.Yes);
+        maleSocket = digitalActionManager.registerAction(publish);
+        maleSocket.setEnabled(false);
+        actionManySocket.getChild(indexAction++).connect(maleSocket);
+
+        publish = new jmri.jmrix.mqtt.logixng.Publish(digitalActionManager.getAutoSystemName(), null, _mqttMemo);
+        publish.getSelectTopic().setValue("topic");
+        publish.getSelectMessage().setValue("message");
+        publish.setRetain(jmri.jmrix.mqtt.logixng.Publish.Retain.No);
         maleSocket = digitalActionManager.registerAction(publish);
         maleSocket.setEnabled(false);
         actionManySocket.getChild(indexAction++).connect(maleSocket);
@@ -3103,6 +3120,7 @@ public class CreateLogixNGTreeScaffold {
         actionManySocket.getChild(indexAction++).connect(maleSocket);
 
         entryExit = new ActionEntryExit(digitalActionManager.getAutoSystemName(), null);
+        entryExit.setUserName("An entry/exit action");     // Used by executeAction below
         entryExit.setComment("A comment");
         entryExit.getSelectEnum().setEnum(ActionEntryExit.Operation.SetNXPairDisabled);
         entryExit.getSelectNamedBean().setAddressing(NamedBeanAddressing.Reference);
@@ -3114,6 +3132,18 @@ public class CreateLogixNGTreeScaffold {
         entryExit.getSelectEnum().setLocalVariable("index2");
         entryExit.getSelectEnum().setReference("{IM2}");
         maleSocket = digitalActionManager.registerAction(entryExit);
+        actionManySocket.getChild(indexAction++).connect(maleSocket);
+
+
+        ExecuteAction executeAction = new ExecuteAction(digitalActionManager.getAutoSystemName(), null);
+        maleSocket = digitalActionManager.registerAction(executeAction);
+        maleSocket.setEnabled(false);
+        actionManySocket.getChild(indexAction++).connect(maleSocket);
+
+        executeAction = new ExecuteAction(digitalActionManager.getAutoSystemName(), null);
+        executeAction.setComment("A comment");
+        executeAction.getSelectNamedBean().setNamedBean("An entry/exit action");
+        maleSocket = digitalActionManager.registerAction(executeAction);
         actionManySocket.getChild(indexAction++).connect(maleSocket);
 
 
@@ -3430,9 +3460,11 @@ public class CreateLogixNGTreeScaffold {
         programOnMain.setComment("A comment");
         programOnMain.setMemo(_locoNetMemo);
         programOnMain.getSelectProgrammingMode().setValue(ProgrammingMode.OPSBYTEMODE.getStandardName());
+        programOnMain.getSelectLongOrShortAddress().setEnum(ProgramOnMain.LongOrShortAddress.Short);
         programOnMain.getSelectAddress().setValue(10);
         programOnMain.getSelectCV().setValue(20);
         programOnMain.getSelectValue().setValue(30);
+        programOnMain.setWait(true);
         maleSocket = digitalActionManager.registerAction(programOnMain);
         actionManySocket.getChild(indexAction++).connect(maleSocket);
 
@@ -3440,10 +3472,25 @@ public class CreateLogixNGTreeScaffold {
         programOnMain.setComment("A comment");
         programOnMain.setMemo(null);
         programOnMain.getSelectProgrammingMode().setValue(ProgrammingMode.OPSBYTEMODE.getStandardName());
+        programOnMain.getSelectLongOrShortAddress().setEnum(ProgramOnMain.LongOrShortAddress.Long);
         programOnMain.getSelectAddress().setValue(15);
         programOnMain.getSelectCV().setValue(25);
         programOnMain.getSelectValue().setValue(35);
         programOnMain.setLocalVariableForStatus("status");
+        programOnMain.setWait(false);
+        maleSocket = digitalActionManager.registerAction(programOnMain);
+        actionManySocket.getChild(indexAction++).connect(maleSocket);
+
+        programOnMain = new ProgramOnMain(digitalActionManager.getAutoSystemName(), null);
+        programOnMain.setComment("A comment");
+        programOnMain.setMemo(null);
+        programOnMain.getSelectProgrammingMode().setValue(ProgrammingMode.OPSBYTEMODE.getStandardName());
+        programOnMain.getSelectLongOrShortAddress().setEnum(ProgramOnMain.LongOrShortAddress.Auto);
+        programOnMain.getSelectAddress().setValue(15);
+        programOnMain.getSelectCV().setValue(25);
+        programOnMain.getSelectValue().setValue(35);
+        programOnMain.setLocalVariableForStatus("status");
+        programOnMain.setWait(false);
         maleSocket = digitalActionManager.registerAction(programOnMain);
         actionManySocket.getChild(indexAction++).connect(maleSocket);
 

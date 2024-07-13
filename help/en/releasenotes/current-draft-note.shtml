@@ -1,7 +1,7 @@
 
     <h3>Hardware Support</h3>
         <ul>
-          <li>Fixed a freeze that could happen when changing the connection preferences.</li>
+          <li></li>
         </ul>
 
         <h4>Acela CTI</h4>
@@ -126,10 +126,7 @@
 
         <h4><a href="http://openlcb.org">OpenLCB</a> / LCC</h4>
             <ul>
-                <li>If you enter an value that's outside the acceptable range
-                    in the configuration tool, the background will now turn
-                    blue to indicate that to you.</li>
-                <li>Improved how the buttons are laid out at the bottom of the CDI window</li>
+                <li></li>
             </ul>
 
         <h4>Powerline</h4>
@@ -164,7 +161,9 @@
 
         <h4>TMCC</h4>
             <ul>
-                <li></li>
+                <li>Now sends repeated function commands so long as 
+                    the throttle function is active.</li>
+                <li>TMCC2 Legacy 200 speed step mode is now available.</li>
             </ul>
 
         <h4>Uhlenbrock Intellibox</h4>
@@ -269,8 +268,7 @@
 
         <h4>Mistral Train Models</h4>
              <ul>
-                <li>Updated Lokommander II definitions. Implement CV114, 115 and 116 according to the firmware version. Firmware V3 : treat as binary and only support up to F8 Firmware V6 : treat as decimal and support up to F28
-                </li>
+                <li></li>
              </ul>
 
         <h4>MTH</h4>
@@ -378,14 +376,30 @@
                 <li></li>
             </ul>
 
-    <h3>DecoderPro</h3>
-        <a id="DecoderPro" name="DecoderPro"></a>
+    <h3>Control Panel Editor</h3>
+        <a id="CPE" name="CPE"></a>
+        <ul>
+            <li></li>
+        </ul>
+        <h4>Circuit Builder</h4>
+            <a id="CPE-CB" name="CPE-CB"></a>
+            <ul>
+                <li></li>
+            </ul>
+        <h4>Palette</h4>
+            <a id="CPE-P" name="CPE-P"></a>
+            <ul>
+                <li></li>
+            </ul>
+
+    <h3>CTC Tool</h3>
+        <a id="PE-CTC" name="PE-CTC"></a>
         <ul>
             <li></li>
         </ul>
 
-    <h3>CTC Tool</h3>
-        <a id="PE-CTC" name="PE-CTC"></a>
+    <h3>DecoderPro</h3>
+        <a id="DecoderPro" name="DecoderPro"></a>
         <ul>
             <li></li>
         </ul>
@@ -411,9 +425,7 @@
     <h3>Layout Editor</h3>
         <a id="LE" name="LE"></a>
         <ul>
-            <li>Fixed the ability to connect turnouts by dragging and dropping. When end points
-            overlap, a track segment is automatically created. This works very nicely for creating
-            yard ladders.  The problem affected panels on Linux and Windows.</li>
+            <li></li>
         </ul>
 
         <h4>NX - Entry/Exit Tool</h4>
@@ -430,24 +442,17 @@
     <h3>LogixNG</h3>
         <a id="LogixNG" name="LogixNG"></a>
         <ul>
-          <li>The functions <strong>round()</strong>, <strong>ceil()</strong>
-              and <strong>floor()</strong> has been added to the Math module.
-              All three rounds a floating point value. ceil() rounds up and
-              floor() rounds down.</li>
-          <li>The constant <strong>oblocks</strong> has been added to
-              the Layout module.</li>
-          <li></li>
+          <li>Prepend the proper prefix when using short system names, such as 123 or abcd.  For
+          alpha suffixes include the required $ character.</li>
         </ul>
 
     <h3>Meters and MeterFrames</h3>
         <a id="Meters" name="Meters"></a>
         <ul>
-            <li>Added a start-up action that will open the meters.</li>
-            <li>Add a MeterToMemory.py sample script that copies Meter
-                values to Memory variables</li>
+            <li></li>
         </ul>
 
-    <h3>Operations</h3>
+    <h3>OperationsPro</h3>
         <a id="Operations" name="Operations"></a>
         <ul>
             <li></li>
@@ -459,22 +464,6 @@
             <li></li>
         </ul>
 
-    <h3>Control Panel Editor</h3>
-        <a id="CPE" name="CPE"></a>
-        <ul>
-            <li>Fixed the popup context menu on Linux.</li>
-        </ul>
-        <h4>Circuit Builder</h4>
-            <a id="CPE-CB" name="CPE-CB"></a>
-            <ul>
-                <li></li>
-            </ul>
-        <h4>Palette</h4>
-            <a id="CPE-P" name="CPE-P"></a>
-            <ul>
-                <li></li>
-            </ul>
-
     <h3>Preferences</h3>
         <a id="Preferences" name="Preferences"></a>
         <ul>
@@ -484,7 +473,11 @@
     <h3>Resources</h3>
         <a id="Resources" name="Resources"></a>
         <ul>
-            <li></li>
+            <li>Added an
+                "<a href="https://jmri.org/extras">/extras/</a>"
+                directory to contain large/specialized downloadable resource files.</li>
+            <li>Added Jim Well's coal tipple sound file to
+                <a href="https://jmri.org/extras/sounds">/extras/sounds</li>
         </ul>
 
     <h3>Roster</h3>
@@ -502,8 +495,7 @@
     <h3>Scripting</h3>
         <a id="Scripting" name="Scripting"></a>
         <ul>
-            <li>New ThrottleBridgeF0F8.py for bridging a throttle between Lenz and Digitrax systems
-                including the F0 through F8 functions.</li>
+            <li></li>
         </ul>
 
     <h3>Signals</h3>
@@ -579,11 +571,17 @@
    <h3>Warrants</h3>
         <a id="Wt" name="Wt"></a>
         <ul>
-            <li></li>
+            <li>Add the <strong>Set Memory Value</strong> action to the Throttle Commands script.</li>
         </ul>
 
    <h3>Web Access</h3>
         <a id="WA" name="WA"></a>
+        <ul>
+            <li></li>
+        </ul>
+
+   <h3>Web Server</h3>
+        <a id="server" name="server"></a>
         <ul>
             <li></li>
         </ul>
@@ -596,12 +594,6 @@
 
    <h3>WiThrottle Server</h3>
         <a id="WS" name="WS"></a>
-        <ul>
-            <li></li>
-        </ul>
-
-   <h3>Web Server</h3>
-        <a id="server" name="server"></a>
         <ul>
             <li></li>
         </ul>
