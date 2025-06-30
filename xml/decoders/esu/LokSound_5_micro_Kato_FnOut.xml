@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?transform-xslt href="http://jmri.org/xml/decoders/esu/LokSound_5_micro_Kato_FnOut.xsl"?>
+
+<variables xmlns:xi="http://www.w3.org/2001/XInclude"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:noNamespaceSchemaLocation="http://jmri.org/xml/schema/decoder-4-15-2.xsd">
+    <variable item="DummyTest" CV="16.0.259">
+        <decVal/>
+    </variable>
+
+<!-- inserting the xsl file here -->
+    
+</variables>
+
+

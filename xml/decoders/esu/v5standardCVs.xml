@@ -1058,7 +1058,12 @@
     <variables exclude="ESU LokPilot 5">
         <xi:include href="http://jmri.org/xml/decoders/esu/v5soundCVs.xml"/>
     </variables>
-    <xi:include href="http://jmri.org/xml/decoders/esu/v5fnOutCVs.xml"/>
+    <variables exclude="LokSound 5 micro KATO">
+        <xi:include href="http://jmri.org/xml/decoders/esu/v5fnOutCVs.xml"/>
+    </variables>
+    <variables include="LokSound 5 micro KATO">
+        <xi:include href="http://jmri.org/xml/decoders/esu/LokSound_5_micro_Kato_FnOut.xml"/>
+    </variables>
     <xi:include href="http://jmri.org/xml/decoders/esu/v5randFuncCVs.xml"/>
     <!-- begin SUSI variables -->
     <!-- note that the exclusions below must be copied to xml/decoders/esu/susiMapPane.xml -->
