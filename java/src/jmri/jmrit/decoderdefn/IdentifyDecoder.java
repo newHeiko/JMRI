@@ -483,7 +483,7 @@ public abstract class IdentifyDecoder extends jmri.jmrit.AbstractIdentify {
     public boolean test9(int value) {
         if (mfgID == Manufacturer.ESU) {
             productID = productID + (value * 256 * 256 * 256);
-            statusUpdate("Read firmware Major version");
+            statusUpdate("Read Firmware Major Version");
             setOptionalCv(true);
             readCV("288");
             return false;
@@ -496,7 +496,7 @@ public abstract class IdentifyDecoder extends jmri.jmrit.AbstractIdentify {
     public boolean test10(int value) {
         if (mfgID == Manufacturer.ESU) {
             fwMajorVersion = value;
-            statusUpdate("Read firmware Minor version");
+            statusUpdate("Read Firmware Minor Version");
             setOptionalCv(true);
             readCV("287");
             return false;
@@ -509,7 +509,7 @@ public abstract class IdentifyDecoder extends jmri.jmrit.AbstractIdentify {
     public boolean test11(int value) {
         if (mfgID == Manufacturer.ESU) {
             fwMinorVersion = value;
-            statusUpdate("Read firmware Build Number Byte 1");
+            statusUpdate("Read Firmware Build Number Byte 1");
             setOptionalCv(true);
             readCV("285");
             return false;
@@ -522,7 +522,7 @@ public abstract class IdentifyDecoder extends jmri.jmrit.AbstractIdentify {
     public boolean test12(int value) {
         if (mfgID == Manufacturer.ESU) {
             fwBuildNumber = value;
-            statusUpdate("Read firmware Build Number Byte 2");
+            statusUpdate("Read Firmware Build Number Byte 2");
             setOptionalCv(true);
             readCV("286");
             return false;
