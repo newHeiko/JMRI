@@ -39,6 +39,14 @@ public abstract class AbstractIdentify implements jmri.ProgListener {
 
     public abstract boolean test9(int value);
 
+    public abstract boolean test10(int value);
+
+    public abstract boolean test11(int value);
+
+    public abstract boolean test12(int value);
+
+    public abstract boolean test13(int value);
+
     protected AbstractIdentify(Programmer p) {
         this.programmer = p;
     }
@@ -210,8 +218,33 @@ public abstract class AbstractIdentify implements jmri.ProgListener {
                 state = 9;
                 if (test9(value)) {
                     identifyDone();
-                } else {
-                    log.error("test9 with value = {} returned false, but there is no next step", value);
+                } 
+                return;
+            case 9:
+                state = 10;
+                if (test10(value)) {
+                    identifyDone();
+                } 
+                return;
+            case 10:
+                state = 11;
+                if (test11(value)) {
+                    identifyDone();
+                } 
+                return;
+            case 11:
+                state = 12;
+                if (test12(value)) {
+                    identifyDone();
+                } 
+                return;
+            case 12:
+                state = 13;
+                if (test13(value)) {
+                    identifyDone();
+                } 
+                else {
+                    log.error("test13 with value = {} returned false, but there is no next step", value);
                 }
                 return;
             default:

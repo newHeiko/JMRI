@@ -131,6 +131,30 @@ abstract public class IdentifyLoco extends jmri.jmrit.AbstractIdentify {
     }
 
     @Override
+    public boolean test10(int value) {
+        log.error("unexpected step 10 reached with value: {}", value);
+        return true;
+    }
+
+    @Override
+    public boolean test11(int value) {
+        log.error("unexpected step 11 reached with value: {}", value);
+        return true;
+    }
+
+    @Override
+    public boolean test12(int value) {
+        log.error("unexpected step 12 reached with value: {}", value);
+        return true;
+    }
+
+    @Override
+    public boolean test13(int value) {
+        log.error("unexpected step 13 reached with value: {}", value);
+        return true;
+    }
+
+    @Override
     protected void statusUpdate(String s) {
         message(s);
         if (s.equals("Done")) {

@@ -203,6 +203,34 @@ public class AbstractIdentifyTest {
         }
 
         @Override
+        public boolean test10(int value) {
+            invoked = 9;
+            ivalue = value;
+            return retval;
+        }
+
+        @Override
+        public boolean test11(int value) {
+            invoked = 10;
+            ivalue = value;
+            return retval;
+        }
+
+        @Override
+        public boolean test12(int value) {
+            invoked = 11;
+            ivalue = value;
+            return retval;
+        }
+
+        @Override
+        public boolean test13(int value) {
+            invoked = 12;
+            ivalue = value;
+            return retval;
+        }
+
+        @Override
         protected void statusUpdate(String s) {
         }
 

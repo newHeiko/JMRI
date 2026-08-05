@@ -100,6 +100,9 @@ public abstract class IdentifyDecoder extends jmri.jmrit.AbstractIdentify {
     int productIDhighest = -1;
     int productIDlowest = -1;
     int productID = -1;
+    int fwMajorVersion = -1;
+    int fwMinorVersion = -1;
+    int fwBuildNumber = -1;
     
     /**
      * Represents specific CV8 values.  We don't do
@@ -480,9 +483,62 @@ public abstract class IdentifyDecoder extends jmri.jmrit.AbstractIdentify {
     public boolean test9(int value) {
         if (mfgID == Manufacturer.ESU) {
             productID = productID + (value * 256 * 256 * 256);
-            return true;
+            statusUpdate("Read firmware Major version");
+            setOptionalCv(true);
+            readCV("288");
+            return false;
         }
         log.error("unexpected step 9 reached with value: {}", value);
+        return true;
+    }
+
+    @Override
+    public boolean test10(int value) {
+        if (mfgID == Manufacturer.ESU) {
+            fwMajorVersion = value;
+            statusUpdate("Read firmware Minor version");
+            setOptionalCv(true);
+            readCV("287");
+            return false;
+        }
+        log.error("unexpected step 10 reached with value: {}", value);
+        return true;
+    }
+
+    @Override
+    public boolean test11(int value) {
+        if (mfgID == Manufacturer.ESU) {
+            fwMinorVersion = value;
+            statusUpdate("Read firmware Build Number Byte 1");
+            setOptionalCv(true);
+            readCV("285");
+            return false;
+        }
+        log.error("unexpected step 11 reached with value: {}", value);
+        return true;
+    }
+
+    @Override
+    public boolean test12(int value) {
+        if (mfgID == Manufacturer.ESU) {
+            fwBuildNumber = value;
+            statusUpdate("Read firmware Build Number Byte 2");
+            setOptionalCv(true);
+            readCV("286");
+            return false;
+        }
+        log.error("unexpected step 12 reached with value: {}", value);
+        return true;
+    }
+
+    @Override
+    public boolean test13(int value) {
+        if (mfgID == Manufacturer.ESU) {
+            fwBuildNumber = fwBuildNumber + (value * 256);
+            statusUpdate("Done");
+            return true;
+        }
+        log.error("unexpected step 13 reached with value: {}", value);
         return true;
     }
 
@@ -491,7 +547,7 @@ public abstract class IdentifyDecoder extends jmri.jmrit.AbstractIdentify {
         message(s);
         if (s.equals("Done")) {
             done(intMfg, modelID, productID);
-            log.info("Decoder returns mfgID:{};modelID:{};productID:{}", intMfg, modelID, productID);
+            log.info("Decoder returns mfgID:{};modelID:{};productID:{};firmware:{}.{}.{}", intMfg, modelID, productID, fwMajorVersion, fwMinorVersion, fwBuildNumber);
         } else if (log.isDebugEnabled()) {
             log.debug("received status: {}", s);
         }
