@@ -19,9 +19,11 @@ import javax.bluetooth.UUID;
 import javax.microedition.io.Connection;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
+import jmri.ThrottleManager;
 import jmri.jmrix.ConnectionStatus;
 import jmri.jmrix.loconet.LnPacketizer;
 import jmri.jmrix.loconet.LnPortController;
+import jmri.jmrix.loconet.LnThrottleManager;
 import jmri.jmrix.loconet.LocoNetSystemConnectionMemo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,6 +178,31 @@ public class LocoNetBluetoothAdapter extends LnPortController {
     public void configure() {
         setCommandStationType(getOptionState(option1Name));
         setTurnoutHandling(getOptionState(option2Name));
+        {
+            int id = 0x0171;
+            try {
+            id = Integer.parseInt(getOptionState("LocoNetThrottleID").substring(2), 16);
+            }
+            catch(NumberFormatException ex) {
+                log.warn("Cannot parse LocoNetThrottleID {}. Using default of 0x0171.", getOptionState("LocoNetThrottleID"));
+                log.warn("Error was: {}", ex.getMessage());
+                id = 0x0171;
+            }
+            finally {
+                if(id > 0x3fff || id < 1) {
+                    log.warn("Invalid LocoNetThrottleID {}. Using default of 0x0171.", getOptionState("LocoNetThrottleID"));
+                    id = 0x0171;
+                }
+                setOptionState("LocoNetThrottleID", "0x".concat(Integer.toHexString(id)) );
+                ThrottleManager tm = this.getSystemConnectionMemo().getThrottleManager();
+                if (tm instanceof LnThrottleManager) {
+                    ( (LnThrottleManager) tm).setThrottleID(id);
+                }
+                else {
+                    log.warn("Cannot set LoconetThrottleID, only supported on LnThrottleManager and subclasses");
+                }
+            }
+        }
         // connect to a packetizing traffic controller
         LnPacketizer packets = new LnPacketizer(this.getSystemConnectionMemo());
         packets.connectPort(this);
