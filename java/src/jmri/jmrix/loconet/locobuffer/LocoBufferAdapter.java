@@ -6,6 +6,7 @@ import jmri.jmrix.loconet.LnCommandStationType;
 import jmri.jmrix.loconet.LnPacketizer;
 import jmri.jmrix.loconet.LnPacketizerStrict;
 import jmri.jmrix.loconet.LnPortController;
+import jmri.jmrix.loconet.LnThrottleManager;
 import jmri.jmrix.loconet.LocoNetSystemConnectionMemo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,8 @@ public class LocoBufferAdapter extends LnPortController {
                 new String[]{Bundle.getMessage("ButtonYes"), Bundle.getMessage("ButtonNo")} )); // NOI18N
         options.put("LoconetProtocolAutoDetect", new Option(Bundle.getMessage("LoconetProtocolAutoDetectLabel"),
                 new String[]{Bundle.getMessage("ButtonNo"),Bundle.getMessage("LoconetProtocolAutoDetect")} )); // NOI18N
+        options.put("LocoNetThrottleID",                                                                       // NOI18N
+                new Option(Bundle.getMessage("LocoNetThrottleIDLabel"), new String[]{"0x0171"}, Option.Type.TEXT));
     }
     
     /**
@@ -133,6 +136,26 @@ public class LocoBufferAdapter extends LnPortController {
         setTranspondingAvailable(getOptionState("TranspondingPresent"));
         setInterrogateOnStart(getOptionState("InterrogateOnStart"));
         setLoconetProtocolAutoDetect(getOptionState("LoconetProtocolAutoDetect"));
+        {
+            int id = 0x0171;
+            try {
+            id = Integer.parseInt(getOptionState("LocoNetThrottleID").substring(2), 16);
+            }
+            catch(NumberFormatException ex) {
+                log.warn("Cannot parse LocoNetThrottleID {}. Using default of 0x0171.", getOptionState("LocoNetThrottleID"));
+                log.warn("Error was: {}", ex.getMessage());
+                id = 0x0171;
+            }
+            finally {
+                if(id > 0x3fff || id < 1) {
+                    log.warn("Invalid LocoNetThrottleID {}. Using default of 0x0171.", getOptionState("LocoNetThrottleID"));
+                    id = 0x0171;
+                }
+                setOptionState("LocoNetThrottleID", String.join("0x", Integer.toHexString(id)) );
+                ( (LnThrottleManager) this.getSystemConnectionMemo().getThrottleManager()).setThrottleID(id);
+            }
+        }
+           
         // connect to a packetizing traffic controller
         LnPacketizer packets = getPacketizer(getOptionState(option4Name));
         packets.connectPort(this);
