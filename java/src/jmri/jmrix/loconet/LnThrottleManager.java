@@ -517,7 +517,7 @@ public class LnThrottleManager extends AbstractThrottleManager implements SlotLi
     /**
      * Set the ThrottleID value for this throttle.
      *
-     * @return the ThrottleID value
+     * @param value the new throttleID to set
      */
     public void setThrottleID(int value) {
         log.warn("Setting loconet throttle ID to 0x{}. Only do this at startup.", Integer.toHexString(value));
