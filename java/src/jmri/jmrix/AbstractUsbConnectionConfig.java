@@ -18,6 +18,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.ListCellRenderer;
 
@@ -213,6 +215,24 @@ abstract public class AbstractUsbConnectionConfig extends AbstractConnectionConf
     }
 
     /**
+     * Check on creating preferences panel
+     * if the suggested selection for the JComboBox is among allowed options.
+     * Set to first allowed option if not.
+     * 
+     * @param i Option name
+     * @param opt Option JComboBox
+     */
+    protected void checkOptionValueValidity(String i, JComboBox<String> opt) {
+        if (!adapter.getOptionState(i).equals(opt.getSelectedItem())) {
+            // no, set 1st option choice
+            opt.setSelectedIndex(0);
+            // log before setting new value to show old value
+            log.warn("Loading found invalid value for option {}, found \"{}\", setting to \"{}\"", i, adapter.getOptionState(i), opt.getSelectedItem());
+            adapter.setOptionState(i, (String) opt.getSelectedItem());
+        }
+    }
+    
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -225,17 +245,23 @@ abstract public class AbstractUsbConnectionConfig extends AbstractConnectionConf
             String[] optionsAvailable = adapter.getOptions();
             options.clear();
             for (String i : optionsAvailable) {
-                JComboBox<String> opt = new JComboBox<>(adapter.getOptionChoices(i));
-                opt.setSelectedItem(adapter.getOptionState(i));
-                // check that it worked
-                if (!adapter.getOptionState(i).equals(opt.getSelectedItem())) {
-                    // no, set 1st option choice
-                    opt.setSelectedIndex(0);
-                    // log before setting new value to show old value
-                    log.warn("Loading found invalid value for option {}, found \"{}\", setting to \"{}\"", i, adapter.getOptionState(i), opt.getSelectedItem());
-                    adapter.setOptionState(i, (String) opt.getSelectedItem());
+                if (adapter.isOptionTypeText(i) ) {
+                    JTextField opt = new JTextField(15);
+                    opt.setText(adapter.getOptionState(i));
+                    options.put(i, new Option(adapter.getOptionDisplayName(i), opt, adapter.isOptionAdvanced(i)));
+                } else if (adapter.isOptionTypePassword(i) ) {
+                    JTextField opt = new JPasswordField(15);
+                    opt.setText(adapter.getOptionState(i));
+                    options.put(i, new Option(adapter.getOptionDisplayName(i), opt, adapter.isOptionAdvanced(i)));
+                } else {
+                    JComboBox<String> opt = new JComboBox<>(adapter.getOptionChoices(i));
+                    opt.setSelectedItem(adapter.getOptionState(i));
+                
+                    // check that it worked
+                    checkOptionValueValidity(i, opt);
+                
+                    options.put(i, new Option(adapter.getOptionDisplayName(i), opt, adapter.isOptionAdvanced(i)));
                 }
-                options.put(i, new Option(adapter.getOptionDisplayName(i), opt, adapter.isOptionAdvanced(i)));
             }
         }
 

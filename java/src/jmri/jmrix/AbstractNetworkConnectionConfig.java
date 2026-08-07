@@ -243,6 +243,14 @@ abstract public class AbstractNetworkConnectionConfig extends AbstractConnection
         return adapter.getCurrentPortName();
     }
 
+    /**
+     * Check on creating preferences panel
+     * if the suggested selection for the JComboBox is among allowed options.
+     * Set to first allowed option if not.
+     * 
+     * @param i Option name
+     * @param opt Option JComboBox
+     */
     protected void checkOptionValueValidity(String i, JComboBox<String> opt) {
         if (!adapter.getOptionState(i).equals(opt.getSelectedItem())) {
             // no, set 1st option choice
