@@ -44,6 +44,8 @@ public class LocoNetBluetoothAdapter extends LnPortController {
         options.put(option1Name, new Option(Bundle.getMessage("CommandStationTypeLabel"), commandStationNames, false));
         options.put(option2Name, new Option(Bundle.getMessage("TurnoutHandling"),
                 new String[]{Bundle.getMessage("HandleNormal"), Bundle.getMessage("HandleSpread"), Bundle.getMessage("HandleOneOnly"), Bundle.getMessage("HandleBoth")})); // I18N
+        options.put("LocoNetThrottleID",                                                                       // NOI18N
+                new Option(Bundle.getMessage("LocoNetThrottleIDLabel"), new String[]{"0x0171"}, Option.Type.TEXT));
     }
 
     @Override
