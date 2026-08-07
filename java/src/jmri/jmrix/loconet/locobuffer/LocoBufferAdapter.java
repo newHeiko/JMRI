@@ -2,6 +2,7 @@ package jmri.jmrix.loconet.locobuffer;
 
 import java.util.Arrays;
 import java.util.Vector;
+import jmri.ThrottleManager;
 import jmri.jmrix.loconet.LnCommandStationType;
 import jmri.jmrix.loconet.LnPacketizer;
 import jmri.jmrix.loconet.LnPacketizerStrict;
@@ -151,8 +152,14 @@ public class LocoBufferAdapter extends LnPortController {
                     log.warn("Invalid LocoNetThrottleID {}. Using default of 0x0171.", getOptionState("LocoNetThrottleID"));
                     id = 0x0171;
                 }
-                setOptionState("LocoNetThrottleID", String.join("0x", Integer.toHexString(id)) );
-                ( (LnThrottleManager) this.getSystemConnectionMemo().getThrottleManager()).setThrottleID(id);
+                setOptionState("LocoNetThrottleID", "0x".concat(Integer.toHexString(id)) );
+                ThrottleManager tm = this.getSystemConnectionMemo().getThrottleManager();
+                if (tm instanceof LnThrottleManager) {
+                    ( (LnThrottleManager) tm).setThrottleID(id);
+                }
+                else {
+                    log.warn("Cannot set LoconetThrottleID, only supported on LnThrottleManager and subclasses");
+                }
             }
         }
            

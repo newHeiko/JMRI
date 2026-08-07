@@ -1,8 +1,10 @@
 package jmri.jmrix.loconet.pr3;
 
+import jmri.ThrottleManager;
 import jmri.jmrix.loconet.LnCommandStationType;
 import jmri.jmrix.loconet.LocoNetSystemConnectionMemo;
 import jmri.jmrix.loconet.LnPacketizer;
+import jmri.jmrix.loconet.LnThrottleManager;
 import jmri.jmrix.loconet.LocoNetMessage;
 import jmri.jmrix.loconet.locobuffer.LocoBufferAdapter;
 import org.slf4j.Logger;
@@ -48,6 +50,32 @@ public class PR3Adapter extends LocoBufferAdapter {
     public void configure() {
         setCommandStationType(getOptionState(option2Name));
         setTurnoutHandling(getOptionState(option3Name));
+        {
+            int id = 0x0171;
+            try {
+            id = Integer.parseInt(getOptionState("LocoNetThrottleID").substring(2), 16);
+            }
+            catch(NumberFormatException ex) {
+                log.warn("Cannot parse LocoNetThrottleID {}. Using default of 0x0171.", getOptionState("LocoNetThrottleID"));
+                log.warn("Error was: {}", ex.getMessage());
+                id = 0x0171;
+            }
+            finally {
+                if(id > 0x3fff || id < 1) {
+                    log.warn("Invalid LocoNetThrottleID {}. Using default of 0x0171.", getOptionState("LocoNetThrottleID"));
+                    id = 0x0171;
+                }
+                setOptionState("LocoNetThrottleID", "0x".concat(Integer.toHexString(id)) );
+                ThrottleManager tm = this.getSystemConnectionMemo().getThrottleManager();
+                if (tm instanceof LnThrottleManager) {
+                    ( (LnThrottleManager) tm).setThrottleID(id);
+                }
+                else {
+                    log.warn("Cannot set LoconetThrottleID, only supported on LnThrottleManager and subclasses");
+                }
+            }
+        }
+
         if (commandStationType == LnCommandStationType.COMMAND_STATION_PR3_ALONE) {
             // PR3 standalone case
             // connect to a packetizing traffic controller

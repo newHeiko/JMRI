@@ -1,6 +1,8 @@
 package jmri.jmrix.loconet.loconetovertcp;
 
+import jmri.ThrottleManager;
 import jmri.jmrix.loconet.LnNetworkPortController;
+import jmri.jmrix.loconet.LnThrottleManager;
 import jmri.jmrix.loconet.LnTrafficController;
 import jmri.jmrix.loconet.LocoNetSystemConnectionMemo;
 import org.slf4j.Logger;
@@ -71,7 +73,31 @@ public class LnTcpDriverAdapter extends LnNetworkPortController {
         setTranspondingAvailable(getOptionState("TranspondingPresent"));
         setInterrogateOnStart(getOptionState("InterrogateOnStart"));
         setLoconetProtocolAutoDetect(getOptionState("LoconetProtocolAutoDetect"));
-
+        {
+            int id = 0x0171;
+            try {
+            id = Integer.parseInt(getOptionState("LocoNetThrottleID").substring(2), 16);
+            }
+            catch(NumberFormatException ex) {
+                log.warn("Cannot parse LocoNetThrottleID {}. Using default of 0x0171.", getOptionState("LocoNetThrottleID"));
+                log.warn("Error was: {}", ex.getMessage());
+                id = 0x0171;
+            }
+            finally {
+                if(id > 0x3fff || id < 1) {
+                    log.warn("Invalid LocoNetThrottleID {}. Using default of 0x0171.", getOptionState("LocoNetThrottleID"));
+                    id = 0x0171;
+                }
+                setOptionState("LocoNetThrottleID", "0x".concat(Integer.toHexString(id)) );
+                ThrottleManager tm = this.getSystemConnectionMemo().getThrottleManager();
+                if (tm instanceof LnThrottleManager) {
+                    ( (LnThrottleManager) tm).setThrottleID(id);
+                }
+                else {
+                    log.warn("Cannot set LoconetThrottleID, only supported on LnThrottleManager and subclasses");
+                }
+            }
+        }
 
         // connect to a packetizing traffic controller
         LnOverTcpPacketizer packets = new LnOverTcpPacketizer(this.getSystemConnectionMemo());
