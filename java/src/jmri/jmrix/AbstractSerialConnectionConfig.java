@@ -5,6 +5,8 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
@@ -99,6 +101,7 @@ abstract public class AbstractSerialConnectionConfig extends AbstractConnectionC
         // set/change delay interval between (actually before) output (Turnout) commands
         outputIntervalSpinner.addChangeListener(e -> adapter.getSystemConnectionMemo().setOutputInterval((Integer) outputIntervalSpinner.getValue()));
 
+        // Add listeners for advanced options combo boxes and text fields.
         for (Map.Entry<String, Option> entry : options.entrySet()) {
             final String item = entry.getKey();
             if (entry.getValue().getComponent() instanceof JComboBox) {
@@ -106,6 +109,28 @@ abstract public class AbstractSerialConnectionConfig extends AbstractConnectionC
                     adapter.setOptionState(item, options.get(item).getItem());
                 });
                 JComboBoxUtil.setupComboBoxMaxRows((JComboBox<?>) entry.getValue().getComponent());
+            }
+            if (entry.getValue().getComponent() instanceof JTextField) {
+                // listen for enter
+                ((JTextField) entry.getValue().getComponent()).addActionListener((ActionEvent e) -> {
+                    log.debug("option text field changed to {}", options.get(item).getItem());
+                    adapter.setOptionState(item, options.get(item).getItem());
+                });
+                // listen for key press so you don't have to hit enter
+                (entry.getValue().getComponent()).addKeyListener(new KeyListener() {
+                    @Override
+                    public void keyPressed(KeyEvent keyEvent) {
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent keyEvent) {
+                        adapter.setOptionState(item, options.get(item).getItem());
+                    }
+
+                    @Override
+                    public void keyTyped(KeyEvent keyEvent) {
+                    }
+                });
             }
         }
 
@@ -311,12 +336,8 @@ abstract public class AbstractSerialConnectionConfig extends AbstractConnectionC
             String[] optionsAvailable = adapter.getOptions();
             options.clear();
             for (String i : optionsAvailable) {
-                if (adapter.isOptionTypeText(i) ) {
+                if (adapter.isOptionTypeText(i) || adapter.isOptionTypePassword(i) ) {
                     JTextField opt = new JTextField(15);
-                    opt.setText(adapter.getOptionState(i));
-                    options.put(i, new Option(adapter.getOptionDisplayName(i), opt, adapter.isOptionAdvanced(i)));
-                } else if (adapter.isOptionTypePassword(i) ) {
-                    JTextField opt = new JPasswordField(15);
                     opt.setText(adapter.getOptionState(i));
                     options.put(i, new Option(adapter.getOptionDisplayName(i), opt, adapter.isOptionAdvanced(i)));
                 } else {

@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Map;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -62,12 +64,34 @@ abstract public class AbstractSimulatorConnectionConfig extends AbstractConnecti
         }
         addNameEntryCheckers(adapter);
 
-        // Add listeners for advanced options combo boxes.
+        // Add listeners for advanced options combo boxes and text fields.
         for (Map.Entry<String, Option> entry : options.entrySet()) {
             final String item = entry.getKey();
             if (entry.getValue().getComponent() instanceof JComboBox) {
                 ((JComboBox<?>) entry.getValue().getComponent()).addActionListener((ActionEvent e) -> {
                     adapter.setOptionState(item, options.get(item).getItem());
+                });
+            }
+            if (entry.getValue().getComponent() instanceof JTextField) {
+                // listen for enter
+                ((JTextField) entry.getValue().getComponent()).addActionListener((ActionEvent e) -> {
+                    log.debug("option text field changed to {}", options.get(item).getItem());
+                    adapter.setOptionState(item, options.get(item).getItem());
+                });
+                // listen for key press so you don't have to hit enter
+                (entry.getValue().getComponent()).addKeyListener(new KeyListener() {
+                    @Override
+                    public void keyPressed(KeyEvent keyEvent) {
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent keyEvent) {
+                        adapter.setOptionState(item, options.get(item).getItem());
+                    }
+
+                    @Override
+                    public void keyTyped(KeyEvent keyEvent) {
+                    }
                 });
             }
         }

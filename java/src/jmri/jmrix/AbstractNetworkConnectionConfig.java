@@ -138,6 +138,7 @@ abstract public class AbstractNetworkConnectionConfig extends AbstractConnection
             }
         });
 
+        // Add listeners for advanced options combo boxes and text fields.
         options.entrySet().forEach(entry -> {
             final String item = entry.getKey();
             if (entry.getValue().getComponent() instanceof JComboBox) {
