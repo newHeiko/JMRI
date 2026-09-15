@@ -86,24 +86,7 @@
 
         <h4>LocoNet</h4>
             <ul>
-                <li>SlotMonitor update: 
-                <ul>
-                    <li>Add ability to hide / move columns. N.B. if you open 2 or more SlotMonitors this is only effective on the first one.</li>
-                    <li>If Extended purge time is enabled in the Command Station the Slow scan for slots is extended.</li>
-                    <li>If purging is disabled in the Command Station so is slow scanning.</li>
-                      A value of -1 stops slowscanning.</li>
-                </ul>
-                <li>Remove some extra messages when configuring with the board-level tools
-                  in the LocoNet menu</li>
-                <li>Added a new programming facade "Digitrax OpSw Word Programming" for
-                  programming at the board level for e.g. DS64's.</li>
-                <li>You can now program, save and load DS64 output addresses and routes in a roster entry using DecoderPro.</li>
-                <li>Add in-use count to the Slot Monitor.</li>
-                <li>Timeouts when programming the Op Switches on Digitrax boards (e.g. DS64, etc) will automatically be retried once.</li>
-                <li>Added interpretation of some BDL716 configuration messages to
-                  LocoNet Monitor.</li>
-                <li>Made some LocoNet-specific programming mode constants public so the can be accessed from scripts.</li>
-                <li>LocoNet Clock now uses the same throttle ID as the rest of JMRI, instead of (illegal) 00 00.</li>
+                <li></li>
             </ul>
 
         <h4>Maple</h4>
@@ -475,7 +458,13 @@
     <h3>Layout Editor</h3>
         <a id="LE" name="LE"></a>
         <ul>
-            <li></li>
+            <li>The default border for Memory Input Icons has been set to "no border" so that
+                users can configure whatever border they want.  Previously, there was
+                always a "shadow line" border placed with the user-specified border.</li>
+            <li>The popup menu for Memory Input Icons now lets you set the number of 
+                columns that the GUI will display. Note that the fixed width
+                interacts with selection:  If you select a wider fixed width,
+                blank areas will display on either side.
         </ul>
 
         <h4>NX - Entry/Exit Tool</h4>
@@ -640,7 +629,16 @@
    <h3>Web Server</h3>
         <a id="server" name="server"></a>
         <ul>
-            <li></li>
+            <li>Some improvements to how the Memory Input icons are handled on panels:
+                <ul>
+                    <li>The padding on the end of the icon now agrees with what's
+                        on the parent JMRI panel.
+                    <li>The drop shadow on the web has been dropped to 
+                        make the appearance agree with the parent JMRI panel.
+                    <li>The default border now agrees with the border on the
+                        parent JMRI panel.
+                </ul>
+            </li>
         </ul>
 
     <h3>Where Used</h3>
@@ -670,6 +668,7 @@
     <h3>Miscellaneous</h3>
         <a id="Misc" name="Misc"></a>
         <ul>
-            <li></li>
+            <li>The "noverify" option has been removed from the JMRI program
+                launchers so that JMRI can use Java 27 and later.</li>
         </ul>
 

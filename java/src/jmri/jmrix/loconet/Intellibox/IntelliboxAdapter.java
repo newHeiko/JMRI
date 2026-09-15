@@ -67,6 +67,7 @@ public class IntelliboxAdapter extends LocoBufferAdapter {
         }
         // connect to a packetizing traffic controller
         IBLnPacketizer packets = new IBLnPacketizer();
+        packets.setLoconetUpdateSlotOnMessageCreation(Bundle.getMessage("ButtonYes").equals(getOptionState("LoconetUpdateSlotOnMessageCreation")));
         packets.connectPort(this);
 
         // create memo

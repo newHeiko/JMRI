@@ -75,6 +75,7 @@ public class UhlenbrockAdapter extends LocoBufferAdapter {
         }
         // connect to a packetizing traffic controller
         UhlenbrockPacketizer packets = new UhlenbrockPacketizer(this.getSystemConnectionMemo());
+        packets.setLoconetUpdateSlotOnMessageCreation(Bundle.getMessage("ButtonYes").equals(getOptionState("LoconetUpdateSlotOnMessageCreation")));
         packets.connectPort(this);
 
         // create memo
